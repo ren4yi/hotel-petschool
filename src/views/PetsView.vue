@@ -8,7 +8,7 @@ const pets = ref([]); //lista de pets vazia
 const tutores = ref([]); // tutores vazio
 
 //chamando a minha api geral
-const API_URL = 'http22://localhost:5173'
+const API_URL = 'http://localhost3000'
 
 //chamar a minha API para listar todos os pets
 
@@ -35,8 +35,7 @@ function nomeDoTutor(tutorID){
   return 'Ooops, Tutor não encontrado!'
 }
 
-onMounted(nomeDoTutor);
-onMounted(carregarDados);
+onMounted(carregarDados, nomeDoTutor);
 </script>
 
 <template>
