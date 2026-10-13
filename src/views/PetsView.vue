@@ -2,40 +2,47 @@
 import { onMounted, ref } from 'vue';
 import { RouterLink } from 'vue-router';
 
-//chamar minha api para listar todos os pets
+const pets = ref([]); // lista de pets vazia
+const tutores = ref([]); // lista de tutores vazia;
 
-const pets = ref([]); //lista de pets vazia
-const tutores = ref([]); // tutores vazio
+// chamando a minha API geral:
+const API_URL = 'http://localhost:3000';
 
-//chamando a minha api geral
-const API_URL = 'http://localhost3000'
-
-//chamar a minha API para listar todos os pets
-
+// chamar a minha API para listar todos os pets e tutores;
 async function carregarDados() {
   const respostaPets = await fetch(`${API_URL}/pets`);
   pets.value = await respostaPets.json();
 
-const respostaTutores = await fetch(`${API_URL}/tutores`);
+  const respostaTutores = await fetch(`${API_URL}/tutores`);
   tutores.value = await respostaTutores.json();
 
-  console.log('PETS - ', pets.value)
-  console.log('TUTORES -', tutores.value)
-
+  console.table(pets.value);
+  console.table(tutores.value);
 }
 
-//exibir o nome do tutor
-
-function nomeDoTutor(tutorID){
-  for(const tutor of tutores.value){
-    if(tutor.id === tutorID){
-      return tutor.nome
+// exibir o nome do tutor
+function nomeDoTutor(tutorId) {
+  for (const tutor of tutores.value) {
+    if (tutor.id === tutorId) {
+      return tutor.nome;
     }
   }
-  return 'Ooops, Tutor não encontrado!'
+  return 'Oopps, Tutor não encontrado!';
 }
 
-onMounted(carregarDados, nomeDoTutor);
+async function excluirPet(id) {
+  const confirmarExclusao = window.confirm('Deseja realmente excluir o pet?');
+
+  if (confirmarExclusao) {
+    // Lógica para excluir o pet http://localhost:3000/pets/${id}
+    await fetch(`${API_URL}/pets/${id}`, {
+      method: 'DELETE',
+    });
+    await carregarDados();
+  }
+}
+
+onMounted(carregarDados);
 </script>
 
 <template>
@@ -48,28 +55,40 @@ onMounted(carregarDados, nomeDoTutor);
     </header>
 
     <RouterLink
-      class="btn btn-primary"
-      :to="{ name: 'novo-pet' }"
+      class="btn btn-outline-primary"
+      to="pets/novo"
     >
-      Adicionar Pet
+      Novo pet
     </RouterLink>
 
     <table class="table table-striped table-hover">
       <thead>
         <tr>
-          <th>ID</th>
+          <th>id</th>
           <th>Nome</th>
-          <th>Especie</th>
+          <th>Espécie</th>
           <th>Tutor</th>
+          <th>Ações</th>
         </tr>
       </thead>
-
       <tbody>
-        <tr v-for="pet in pets" :key="pet.id">
+        <tr
+          v-for="pet in pets"
+          :key="pet.id"
+        >
           <td>{{ pet.id }}</td>
           <td>{{ pet.nome }}</td>
-          <td>{{pet.especie}}</td>
-          <td>{{ pet.tutorId }}</td>
+          <td>{{ pet.especie }}</td>
+          <td>{{ nomeDoTutor(pet.tutorId) }}</td>
+          <td>
+            <RouterLink :to="`/pets/${pet.id}`"> Visualizar </RouterLink>
+            <button
+              class="btn btn-danger"
+              @click="excluirPet(pet.id)"
+            >
+              Excluir
+            </button>
+          </td>
         </tr>
       </tbody>
     </table>
