@@ -50,7 +50,7 @@ onMounted(carregarDados);
     <header class="mb-4">
       <h1 class="text-2xl font-bold">Listagem de Tutores</h1>
       <p class="text-body-secondary mb-0">
-        Listagem dos Tutores cadastrados no sistema.
+      Tutores cadastrados no sistema.
       </p>
     </header>
 
