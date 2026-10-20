@@ -67,6 +67,8 @@ onMounted(carregarDados);
           <th>id</th>
           <th>Nome</th>
           <th>Telefone</th>
+          <th>Pets Vinculados</th>
+          <th>Nome dos Pets</th>
         </tr>
       </thead>
       <tbody>

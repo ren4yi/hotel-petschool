@@ -12,10 +12,18 @@ const tutores = ref([]);
 // criar objeto para salvar um novo pet
 // propriedades: nome, especie e tutorId
 
-const novoPet = ref({
+const novoTutor = ref({
   nome: '',
-  especie: '',
-  tutorId: '',
+  telefone: '',
+  cpf: '',
+  email: '',
+  rua: '',
+  numero: '',
+  bairro: '',
+  estado: '',
+  cidade: '',
+  cep: '',
+  numerocasa: '',
 });
 
 // buscar todos os tutores que estão salvo na aplicação
@@ -27,18 +35,18 @@ async function carregarTutores() {
   console.table(tutores.value);
 }
 
-// salvar o novo pet no sistema
-async function salvarPet() {
-  await fetch(`${API_URL}/pets`, {
+// salvar o novo tutor no sistema
+async function salvarTutor() {
+  await fetch(`${API_URL}/tutores`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
     },
-    body: JSON.stringify(novoPet.value),
+    body: JSON.stringify(novoTutor.value),
   });
 
   // redirecionar para a tela de listagem de Pets
-  router.push('/pets');
+  router.push('/tutores');
 }
 
 onMounted(carregarTutores);
@@ -47,20 +55,20 @@ onMounted(carregarTutores);
 <template>
   <div>
     <header class="mb-4">
-      <h1 class="text-2xl font-bold">Cadastrar Pets</h1>
-      <p class="text-body-secondary mb-0">Cadastro de Pets no sistema.</p>
+      <h1 class="text-2xl font-bold">Cadastrar novos tutores</h1>
+      <p class="text-body-secondary mb-0">Cadastro de tutores no sistema.</p>
     </header>
 
     <RouterLink
       class="btn btn-outline-primary"
-      :to="{ name: 'pets' }"
+      :to="{ name: 'tutores' }"
     >
-      Lista Pet
+      Lista tutores
     </RouterLink>
 
     <form
       class="row"
-      @submit.prevent="salvarPet"
+      @submit.prevent="salvarTutor"
     >
       <!-- nome do pet -->
       <div class="col-md-6">
@@ -68,70 +76,170 @@ onMounted(carregarTutores);
           for="nome"
           class="form-label"
         >
-          Nome do Pet:
+          Nome completo:
         </label>
         <input
           type="text"
           class="form-control"
           id="nome"
-          v-model="novoPet.nome"
+          v-model="novoTutor.nome"
           required
         />
       </div>
+
+      <div class="col-md-6">
+        <label
+          for="cpf"
+          class="form-label"
+        >
+         CPF / CNPJ
+        </label>
+        <input
+          type="text"
+          class="form-control"
+          id="cpf"
+          v-model="novoTutor.cpf"
+          required
+        />
+      </div>
+
+       <div class="col-md-6">
+        <label
+          for="telefone"
+          class="form-label"
+        >
+        Telefone / Celular / Whatsapp
+        </label>
+        <input
+          type="text"
+          class="form-control"
+          id="telefone"
+          v-model="novoTutor.telefone"
+          required
+        />
+      </div>
+
+       <div class="col-md-6">
+        <label
+          for="email"
+          class="form-label"
+        >
+         E-mail
+        </label>
+        <input
+          type="text"
+          class="form-control"
+          id="email"
+          v-model="novoTutor.email"
+          required
+        />
+      </div>
+
       <!-- especie do pet -->
       <div class="col-md-6">
         <label
           class="form-label"
-          for="especie"
-          >Espécie</label
+          for="estado"
+          >Estado</label
         >
         <select
-          name="especie"
-          id="especie"
+          name="estado"
+          id="estado"
           class="form-select"
           required
-          v-model="novoPet.especie"
+          v-model="novoTutor.estado"
         >
           <option
             value=""
             disabled
           >
-            Selecione a espécie:
+            Selecione o estado:
           </option>
-          <option value="Cachorro">Cachorro</option>
-          <option value="Gato">Gato</option>
-          <option value="Coelho">Coelho</option>
-          <option value="Tartaruga">Tartaruga</option>
+          <option value="SC">Santa Catarina</option>
+          <option value="MG">Minas Gerais</option>
+          <option value="RS">Rio Grande do Sul</option>
+          <option value="SP">São Paulo</option>
         </select>
       </div>
-      <!-- nome do tutor responsável pelo pet -->
+
+       <div class="col-md-6">
+        <label
+          for="cidade"
+          class="form-label"
+        >
+         Cidade
+        </label>
+        <input
+          type="text"
+          class="form-control"
+          id="cidade"
+          v-model="novoTutor.cidade"
+          required
+        />
+      </div>
+
+<div class="col-md-6">
+        <label
+          for="bairro"
+          class="form-label"
+        >
+         Bairro
+        </label>
+        <input
+          type="text"
+          class="form-control"
+          id="bairro"
+          v-model="novoTutor.bairro"
+          required
+        />
+      </div>
+
+    <div class="col-md-6">
+        <label
+          for="rua"
+          class="form-label"
+        >
+         Rua
+        </label>
+        <input
+          type="text"
+          class="form-control"
+          id="rua"
+          v-model="novoTutor.rua"
+          required
+        />
+      </div>
+
+        <div class="col-md-6">
+        <label
+          for="numerocasa"
+          class="form-label"
+        >
+         Número
+        </label>
+        <input
+          type="text"
+          class="form-control"
+          id="numerocasa"
+          v-model="novoTutor.numerocasa"
+          required
+        />
+      </div>
+
       <div class="col-md-6">
         <label
-          for="tutor"
+          for="cep"
           class="form-label"
-          >Tutor</label
         >
-        <select
-          name="tutor"
-          id="tutor"
-          class="form-select"
-          v-model="novoPet.tutorId"
-        >
-          <option
-            value=""
-            disabled
-          >
-            Selecione o Tutor
-          </option>
-          <!-- bind do value do option com o id do tutor -->
-          <option
-            v-for="tutor in tutores"
-            :key="tutor.id"
-            :value="tutor.id"
-          >
-            {{ tutor.nome }}
-          </option>
-        </select>
+         CEP
+        </label>
+        <input
+          type="text"
+          class="form-control"
+          id="cep"
+          v-model="novoTutor.cep"
+          required
+        />
       </div>
 
       <div class="col-12 d-flex gap-2">
@@ -139,7 +247,7 @@ onMounted(carregarTutores);
           class="btn btn-success"
           type="submit"
         >
-          Salvar Pet
+          Salvar tutor
         </button>
       </div>
     </form>
