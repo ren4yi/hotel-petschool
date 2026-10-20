@@ -17,6 +17,7 @@ const novoTutor = ref({
   telefone: '',
   cpf: '',
   email: '',
+  dataNascimento: '',
   rua: '',
   numero: '',
   bairro: '',
@@ -102,6 +103,24 @@ onMounted(carregarTutores);
           required
         />
       </div>
+
+
+<div class="col-md-6">
+  <label
+    for="dataNascimento"
+    class="form-label"
+  >
+    Data de Nascimento
+  </label>
+  <input
+    type="date"
+    class="form-control"
+    id="dataNascimento"
+    v-model="novoTutor.dataNascimento"
+    required
+  />
+</div>
+
 
        <div class="col-md-6">
         <label

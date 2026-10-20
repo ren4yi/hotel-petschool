@@ -33,6 +33,11 @@ const router = createRouter({
     name: 'novo-tutor',
     component: () => import('../views/addTutor.vue')
     },
+      {
+    path: '/tutores/:id',
+    name: 'tutor-detalhes',
+    component: () => import('../views/TutorDetailsView.vue'),
+  },
      {
     path: '/tutores/id',
     name: 'detalhes-tutor',

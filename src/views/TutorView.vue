@@ -1,96 +1,90 @@
 <script setup>
-import { onMounted, ref } from 'vue';
 import { RouterLink } from 'vue-router';
+import { ref } from 'vue';
+import { onMounted } from 'vue';
 
-const pets = ref([]); // lista de pets vazia
-const tutores = ref([]); // lista de tutores vazia;
+// receive API to list all the pets
+const pets = ref([]);
+const tutors = ref([]);
 
-// chamando a minha API geral:
+// API const
 const API_URL = 'http://localhost:3000';
+// function to receive the data
+async function loadData() {
+  const dataPets = await fetch(`${API_URL}/pets`);
+  pets.value = await dataPets.json();
 
-// chamar a minha API para listar todos os pets e tutores;
-async function carregarDados() {
-  const respostaPets = await fetch(`${API_URL}/pets`);
-  pets.value = await respostaPets.json();
+  const dataTutors = await fetch(`${API_URL}/tutores`);
+  tutors.value = await dataTutors.json();
 
-  const respostaTutores = await fetch(`${API_URL}/tutores`);
-  tutores.value = await respostaTutores.json();
-
-  console.table(pets.value);
-  console.table(tutores.value);
+  console.log('PETS - ', pets.value);
+  console.log('TUTORS - ', tutors.value);
 }
 
-// exibir o nome do tutor
-function nomeDoTutor(tutorId) {
-  for (const tutor of tutores.value) {
-    if (tutor.id === tutorId) {
-      return tutor.nome;
-    }
-  }
-  return 'Oopps, Tutor não encontrado!';
+function getPets(tutorId) {
+    const petsDesteTutor = ref([]);
+        for (const pet of pets.value) {
+                if (pet.tutorId === tutorId) {
+                petsDesteTutor.value.push(pet.nome);
+            };
+        }
+    return petsDesteTutor.value;
 }
 
-async function excluirPet(id) {
-  const confirmarExclusao = window.confirm('Deseja realmente excluir o pet?');
+async function excluirTutor(id) {
+  const confirmarExclusão = window.confirm('Deseja realmente excluir o pet?');
 
-  if (confirmarExclusao) {
-    // Lógica para excluir o pet http://localhost:3000/pets/${id}
-    await fetch(`${API_URL}/pets/${id}`, {
+  if (confirmarExclusão) {
+    await fetch(`${API_URL}/tutores/${id}`, {
       method: 'DELETE',
     });
-    await carregarDados();
+    await loadData();
   }
 }
 
-onMounted(carregarDados);
+onMounted(loadData);
 </script>
 
 <template>
-  <div>
-    <header class="mb-4">
-      <h1 class="text-2xl font-bold">Listagem de Tutores</h1>
-      <p class="text-body-secondary mb-0">
-      Tutores cadastrados no sistema.
-      </p>
-    </header>
+  <header class="mb-4">
+    <h1 class="text-2xl font-bold">Listagem dos Tutores</h1>
+    <p class="text-body-secondary mb-0">
+      Listagem dos Tutores cadastrados no sistema.
+    </p>
+  </header>
 
-    <RouterLink
-      class="btn btn-outline-primary"
-      to="/tutores/novo"
-    >
-      Novo Tutor
-    </RouterLink>
+  <RouterLink class="btn btn-primary" :to="'/tutores/novo'">Adicionar Tutor</RouterLink>
 
-    <table class="table table-striped table-hover">
-      <thead>
-        <tr>
-          <th>id</th>
-          <th>Nome</th>
-          <th>Telefone</th>
-          <th>Pets Vinculados</th>
-          <th>Nome dos Pets</th>
+  <table class="table table-striped table-hover mt-3">
+    <thead>
+        <th>ID</th>
+        <th>Nome Completo</th>
+        <th>CPF</th>
+        <th>Telefone</th>
+        <th>E-mail</th>
+        <th>Pets (Quantidade)</th>
+        <th>Nome dos Pets</th>
+        <th>Ações</th>
+    </thead>
+    <tbody>
+        <tr v-for="tutor in tutors" :key="tutor.id">
+            <td>{{ tutor.id }}</td>
+            <td>{{ tutor.nome }}</td>
+            <td>{{ tutor.cpf }}</td>
+            <td>{{ tutor.telefone }}</td>
+            <td>{{ tutor.email }}</td>
+            <td>{{ getPets(tutor.id).length }}</td>
+            <td>{{ getPets(tutor.id).join(' / ') }}</td>
+            <td>
+               <RouterLink
+              :to="`/tutores/${tutor.id}`"
+             class="btn btn-outline-primary"
+              >
+               Visualizar
+              </RouterLink>
+                <button v-on:click.prevent="excluirTutor(tutor.id)" class="btn btn-sm btn-outline-danger"><i class="bi-trash me-1"></i>Excluir</button>
+            </td>
         </tr>
-      </thead>
-      <tbody>
-        <tr
-          v-for="pet in pets"
-          :key="pet.id"
-        >
-          <td>{{ pet.id }}</td>
-          <td>{{ pet.nome }}</td>
-          <td>{{ pet.especie }}</td>
-          <td>{{ nomeDoTutor(pet.tutorId) }}</td>
-          <td>
-            <RouterLink :to="`/pets/${pet.id}`"> Visualizar </RouterLink>
-            <button
-              class="btn btn-danger"
-              @click="excluirPet(pet.id)"
-            >
-              Excluir
-            </button>
-          </td>
-        </tr>
-      </tbody>
-    </table>
-  </div>
+    </tbody>
+  </table>
 </template>
